@@ -1,0 +1,47 @@
+{
+  "project_info": {
+    "project_number": "810744638441",
+    "firebase_url": "https://cbfswhatsclone.firebaseio.com",
+    "project_id": "cbfswhatsclone",
+    "storage_bucket": "cbfswhatsclone.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:810744638441:android:f3b6650d1fa4bdfdb6b978",
+        "android_client_info": {
+          "package_name": "com.example.flutterappwhatsappcb"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "810744638441-h1ajgta2ghnmdacli11dnk8edclvq8d5.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCp7PQL3q-0UXPNILDv0uBk7E86AmlO9D8"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "810744638441-h1ajgta2ghnmdacli11dnk8edclvq8d5.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "810744638441-h64e4tmv15hprs4dam5o4rnq7ml71rov.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.example.flutterappcbfsclone"
+              }
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
