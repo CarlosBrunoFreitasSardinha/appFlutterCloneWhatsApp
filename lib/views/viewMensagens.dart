@@ -42,14 +42,15 @@ class _MensagensState extends State<Mensagens> {
 
       mensagem.salvarMensagem();
       //Salvar conversa
-      _salvarConversa( mensagem );
+      _salvarConversa(mensagem);
       _controllerMensagem.clear();
     }
   }
 
   Future _enviarImagem() async {
     File imagemSelecionada;
-    imagemSelecionada = await ImagePicker.pickImage(source: ImageSource.gallery);
+    imagemSelecionada =
+        await ImagePicker.pickImage(source: ImageSource.gallery);
 
     _subindoImagem = true;
     String nomeImagem = DateTime.now().millisecondsSinceEpoch.toString();
@@ -57,19 +58,19 @@ class _MensagensState extends State<Mensagens> {
     StorageReference pastaRaiz = storage.ref();
     StorageReference arquivo = pastaRaiz
         .child("mensagens")
-        .child( UserFirebase.fireLogged.uidUser )
-        .child( nomeImagem + ".jpg");
+        .child(UserFirebase.fireLogged.uidUser)
+        .child(nomeImagem + ".jpg");
 
     //Upload da imagem
-    StorageUploadTask task = arquivo.putFile( imagemSelecionada );
+    StorageUploadTask task = arquivo.putFile(imagemSelecionada);
 
     //Controlar progresso do upload
-    task.events.listen((StorageTaskEvent storageEvent){
-      if( storageEvent.type == StorageTaskEventType.progress ){
+    task.events.listen((StorageTaskEvent storageEvent) {
+      if (storageEvent.type == StorageTaskEventType.progress) {
         setState(() {
           _subindoImagem = true;
         });
-      }else if( storageEvent.type == StorageTaskEventType.success ){
+      } else if (storageEvent.type == StorageTaskEventType.success) {
         setState(() {
           _subindoImagem = false;
         });
@@ -77,12 +78,12 @@ class _MensagensState extends State<Mensagens> {
     });
 
     //Recuperar url da imagem
-    task.onComplete.then((StorageTaskSnapshot snapshot){
+    task.onComplete.then((StorageTaskSnapshot snapshot) {
       _recuperarUrlImagem(snapshot);
     });
   }
 
-  Future _recuperarUrlImagem(StorageTaskSnapshot snapshot) async{
+  Future _recuperarUrlImagem(StorageTaskSnapshot snapshot) async {
     String url = await snapshot.ref.getDownloadURL();
 
     Mensagem mensagem = Mensagem();
@@ -94,7 +95,7 @@ class _MensagensState extends State<Mensagens> {
     mensagem.salvarMensagem();
   }
 
-  _salvarConversa(Mensagem msg){
+  _salvarConversa(Mensagem msg) {
     //Salvar conversa remetente
     Conversa cRemetente = Conversa();
     cRemetente.idRemetente = msg.idUsuarioEmissor;
@@ -121,6 +122,7 @@ class _MensagensState extends State<Mensagens> {
         .collection("mensagens")
         .document(UserFirebase.fireLogged.uidUser)
         .collection(destinatario.uidUser)
+        .orderBy("envio", descending: false)
         .snapshots();
 
     stream.listen((dados) {
@@ -163,10 +165,13 @@ class _MensagensState extends State<Mensagens> {
                         fillColor: Colors.white,
                         border: OutlineInputBorder(
                             borderRadius: BorderRadius.circular(32)),
-                        prefixIcon:
-                        _subindoImagem
+                        prefixIcon: _subindoImagem
                             ? CircularProgressIndicator()
-                            : IconButton(icon: Icon(Icons.camera_alt),onPressed:(){_enviarImagem();})),
+                            : IconButton(
+                            icon: Icon(Icons.camera_alt),
+                            onPressed: () {
+                              _enviarImagem();
+                            })),
                   ))),
           Platform.isIOS
               ? CupertinoButton(

@@ -3,7 +3,6 @@ import 'package:flutterappwhatsappcb/home.dart';
 import 'package:flutterappwhatsappcb/login/Cadastro.dart';
 import 'package:flutterappwhatsappcb/login/login.dart';
 import 'package:flutterappwhatsappcb/views/configuracoes.dart';
-import 'package:flutterappwhatsappcb/views/teste_imagePikker.dart';
 import 'package:flutterappwhatsappcb/views/viewContatos.dart';
 import 'package:flutterappwhatsappcb/views/viewConversas.dart';
 import 'package:flutterappwhatsappcb/views/viewMensagens.dart';

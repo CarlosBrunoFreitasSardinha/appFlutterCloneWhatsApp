@@ -1,9 +1,4 @@
-import 'dart:io';
-
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:firebase_storage/firebase_storage.dart';
-import 'package:flutterappwhatsappcb/model/usuarioFireBase.dart';
-import 'package:image_picker/image_picker.dart';
 
 class Mensagem{
 
@@ -12,7 +7,7 @@ class Mensagem{
   String _mensagem;
   String _urlImagem;
   String _tipo;
-  DateTime envio = new DateTime.now();
+  String envio = Timestamp.now().toString();
 
   Mensagem();
 
@@ -71,15 +66,13 @@ class Mensagem{
         .collection("mensagens")
         .document(this.idUsuarioEmissor)
         .collection(this.idUsuarioReceptor)
-        .document(this.envio.toIso8601String()+this.idUsuarioEmissor)
-        .setData(this.toMap());
+        .add(this.toMap());
 
     await bd
         .collection("mensagens")
         .document(this.idUsuarioReceptor)
         .collection(this.idUsuarioEmissor)
-        .document(this.envio.toIso8601String()+this.idUsuarioReceptor)
-        .setData(this.toMap());
+        .add(this.toMap());
   }
 
 }
