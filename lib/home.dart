@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutterappwhatsappcb/model/usuarioFireBase.dart';
@@ -56,43 +58,43 @@ class _HomeState extends State<Home> with SingleTickerProviderStateMixin{
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: Text("WhatsApp"),
-          elevation: 0,
+        appBar: AppBar(
+          title: Text("WhatsApp"),
+          elevation: Platform.isIOS ? 0 : 4,
           bottom: TabBar(
-          indicatorWeight: 7,
-            labelStyle: TextStyle(
-              fontSize: 18,
-              fontWeight: FontWeight.bold
-            ),
-            controller: _tabController,
-            indicatorColor: Colors.white,
-            tabs: <Widget>[
-              Tab(text: "Conversas",),
-              Tab(text: "Contatos",),
-            ]
+              indicatorWeight: 7,
+              labelStyle: TextStyle(
+                  fontSize: 18,
+                  fontWeight: FontWeight.bold
+              ),
+              controller: _tabController,
+              indicatorColor: Platform.isIOS ? Colors.grey[400] : Colors.white,
+              tabs: <Widget>[
+                Tab(text: "Conversas",),
+                Tab(text: "Contatos",),
+              ]
+          ),
+          actions: <Widget>[
+            PopupMenuButton<String>(
+              onSelected: _escolhaMenuItem,
+              itemBuilder: (context){
+                return _itensMenu.map((String item) {
+                  return PopupMenuItem<String>(
+                    value: item,
+                    child: Text(item),
+                  );
+                }).toList();
+              },
+            )
+          ],
         ),
-        actions: <Widget>[
-          PopupMenuButton<String>(
-            onSelected: _escolhaMenuItem,
-            itemBuilder: (context){
-              return _itensMenu.map((String item) {
-                return PopupMenuItem<String>(
-                 value: item,
-                  child: Text(item),
-                );
-              }).toList();
-            },
-          )
-        ],
-      ),
-      body: TabBarView(
-        controller: _tabController,
+        body: TabBarView(
+          controller: _tabController,
           children: <Widget>[
             abaConversas(),
             abaContatos(),
           ],
-      )
+        )
     );
   }
 }

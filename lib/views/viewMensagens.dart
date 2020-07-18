@@ -2,6 +2,7 @@ import 'dart:io';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_storage/firebase_storage.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutterappwhatsappcb/model/Conversa.dart';
 import 'package:flutterappwhatsappcb/model/mensagem.dart';
@@ -151,14 +152,19 @@ class _MensagensState extends State<Mensagens> {
                             ? CircularProgressIndicator()
                             : IconButton(icon: Icon(Icons.camera_alt),onPressed:(){_enviarImagem();})),
                   ))),
-          FloatingActionButton(
-            backgroundColor: Color(0xff075E54),
-            child: Icon(Icons.send, color: Colors.white),
-            mini: true,
-            onPressed: () {
-              _enviarMensagem();
-            },
-          )
+          Platform.isIOS
+              ? CupertinoButton(
+                  child: Text("Enviar"),
+                  onPressed: _enviarMensagem(),
+                )
+              : FloatingActionButton(
+                  backgroundColor: Color(0xff075E54),
+                  child: Icon(Icons.send, color: Colors.white),
+                  mini: true,
+                  onPressed: () {
+                    _enviarMensagem();
+                  },
+                )
         ],
       ),
     );
