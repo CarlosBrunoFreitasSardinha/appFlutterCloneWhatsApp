@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:io';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -12,15 +13,18 @@ import 'package:image_picker/image_picker.dart';
 
 class Mensagens extends StatefulWidget {
   Usuario contato;
+
   Mensagens(this.contato);
+
   @override
   _MensagensState createState() => _MensagensState();
 }
 
 class _MensagensState extends State<Mensagens> {
-  Usuario destinatario;
   Firestore bd = Firestore.instance;
-
+  final _controller = StreamController<QuerySnapshot>.broadcast();
+  ScrollController _scrollControllerMensagens = ScrollController();
+  Usuario destinatario;
   String idReceptor, urlImagemEnviada;
   bool _subindoImagem = false;
 
@@ -44,7 +48,6 @@ class _MensagensState extends State<Mensagens> {
   }
 
   Future _enviarImagem() async {
-
     File imagemSelecionada;
     imagemSelecionada = await ImagePicker.pickImage(source: ImageSource.gallery);
 
@@ -62,7 +65,6 @@ class _MensagensState extends State<Mensagens> {
 
     //Controlar progresso do upload
     task.events.listen((StorageTaskEvent storageEvent){
-
       if( storageEvent.type == StorageTaskEventType.progress ){
         setState(() {
           _subindoImagem = true;
@@ -72,7 +74,6 @@ class _MensagensState extends State<Mensagens> {
           _subindoImagem = false;
         });
       }
-
     });
 
     //Recuperar url da imagem
@@ -94,7 +95,6 @@ class _MensagensState extends State<Mensagens> {
   }
 
   _salvarConversa(Mensagem msg){
-
     //Salvar conversa remetente
     Conversa cRemetente = Conversa();
     cRemetente.idRemetente = msg.idUsuarioEmissor;
@@ -114,7 +114,22 @@ class _MensagensState extends State<Mensagens> {
     cDestinatario.caminhoFoto = destinatario.urlImagemPerfil;
     cDestinatario.tipoMensagem = msg.tipo;
     cDestinatario.salvar();
+  }
 
+  Stream<QuerySnapshot> _adicionarListenerConversas() {
+    final stream = bd
+        .collection("mensagens")
+        .document(UserFirebase.fireLogged.uidUser)
+        .collection(destinatario.uidUser)
+        .snapshots();
+
+    stream.listen((dados) {
+      _controller.add(dados);
+      Timer(Duration(seconds: 1), () {
+        _scrollControllerMensagens
+            .jumpTo(_scrollControllerMensagens.position.maxScrollExtent);
+      });
+    });
   }
 
   @override
@@ -122,6 +137,7 @@ class _MensagensState extends State<Mensagens> {
     // TODO: implement initState
     super.initState();
     destinatario = widget.contato;
+    _adicionarListenerConversas();
   }
 
   @override
@@ -154,27 +170,23 @@ class _MensagensState extends State<Mensagens> {
                   ))),
           Platform.isIOS
               ? CupertinoButton(
-                  child: Text("Enviar"),
-                  onPressed: _enviarMensagem(),
-                )
+            child: Text("Enviar"),
+            onPressed: _enviarMensagem(),
+          )
               : FloatingActionButton(
-                  backgroundColor: Color(0xff075E54),
-                  child: Icon(Icons.send, color: Colors.white),
-                  mini: true,
-                  onPressed: () {
-                    _enviarMensagem();
-                  },
-                )
+            backgroundColor: Color(0xff075E54),
+            child: Icon(Icons.send, color: Colors.white),
+            mini: true,
+            onPressed: () {
+              _enviarMensagem();
+            },
+          )
         ],
       ),
     );
 
     var stream = StreamBuilder(
-      stream: bd
-          .collection("mensagens")
-          .document(UserFirebase.fireLogged.uidUser)
-          .collection(idReceptor)
-          .snapshots(),
+      stream: _controller.stream,
       // ignore: missing_return
       builder: (context, snapshot) {
         switch (snapshot.connectionState) {
@@ -197,11 +209,12 @@ class _MensagensState extends State<Mensagens> {
             } else {
               return Expanded(
                 child: ListView.builder(
+                    controller: _scrollControllerMensagens,
                     itemCount: querySnapshot.documents.length,
                     itemBuilder: (context, indice) {
                       //recupera mensagem
                       List<DocumentSnapshot> mensagens =
-                          querySnapshot.documents.toList();
+                      querySnapshot.documents.toList();
                       DocumentSnapshot item = mensagens[indice];
 
                       double larguraContainer =
@@ -226,12 +239,12 @@ class _MensagensState extends State<Mensagens> {
                             decoration: BoxDecoration(
                                 color: cor,
                                 borderRadius:
-                                    BorderRadius.all(Radius.circular(8))),
+                                BorderRadius.all(Radius.circular(8))),
                             child: item["tipo"] == "texto"
                                 ? Text(
-                                    item["mensagem"],
-                                    style: TextStyle(fontSize: 18),
-                                  )
+                              item["mensagem"],
+                              style: TextStyle(fontSize: 18),
+                            )
                                 : Image.network(item["urlImagem"]),
                           ),
                         ),
@@ -269,14 +282,14 @@ class _MensagensState extends State<Mensagens> {
                 image: AssetImage("imagens/bg.png"), fit: BoxFit.cover)),
         child: SafeArea(
             child: Container(
-          padding: EdgeInsets.all(8),
-          child: Column(
-            children: <Widget>[
-              stream,
-              caixaMensagem,
-            ],
-          ),
-        )),
+              padding: EdgeInsets.all(8),
+              child: Column(
+                children: <Widget>[
+                  stream,
+                  caixaMensagem,
+                ],
+              ),
+            )),
       ),
     );
   }
