@@ -1,9 +1,8 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:flutterappwhatsappcb/model/usuario.dart';
 class Conversa {
 
   String _idRemetente;
-  Usuario _idDestinatario;
+  String _idDestinatario;
   String _nome;
   String _mensagem;
   String _caminhoFoto;
@@ -17,7 +16,7 @@ class Conversa {
     await db.collection("conversas")
         .document( this.idRemetente )
         .collection( "ultima_conversa" )
-        .document( this.idDestinatario.uidUser)
+        .document(this.idDestinatario)
         .setData( this.toMap() );
 
   }
@@ -26,7 +25,7 @@ class Conversa {
 
     Map<String, dynamic> map = {
       "idRemetente"     : this.idRemetente,
-      "idDestinatario"  : this.idDestinatario.toMap(),
+      "idDestinatario": this.idDestinatario,
       "nome"            : this.nome,
       "mensagem"        : this.mensagem,
       "caminhoFoto"     : this.caminhoFoto,
@@ -62,9 +61,9 @@ class Conversa {
     _mensagem = value;
   }
 
-  Usuario get idDestinatario => _idDestinatario;
+  String get idDestinatario => _idDestinatario;
 
-  set idDestinatario(Usuario value) {
+  set idDestinatario(String value) {
     _idDestinatario = value;
   }
 

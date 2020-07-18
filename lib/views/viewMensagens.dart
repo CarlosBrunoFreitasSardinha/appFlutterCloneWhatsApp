@@ -1,4 +1,5 @@
 import 'dart:io';
+
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
@@ -96,7 +97,7 @@ class _MensagensState extends State<Mensagens> {
     //Salvar conversa remetente
     Conversa cRemetente = Conversa();
     cRemetente.idRemetente = msg.idUsuarioEmissor;
-    cRemetente.idDestinatario = destinatario;
+    cRemetente.idDestinatario = destinatario.uidUser;
     cRemetente.mensagem = msg.mensagem;
     cRemetente.nome = destinatario.nome;
     cRemetente.caminhoFoto = destinatario.urlImagemPerfil;
@@ -106,7 +107,7 @@ class _MensagensState extends State<Mensagens> {
     //Salvar conversa destinatario
     Conversa cDestinatario = Conversa();
     cDestinatario.idRemetente = msg.idUsuarioReceptor;
-    cDestinatario.idDestinatario = UserFirebase.fireLogged;
+    cDestinatario.idDestinatario = UserFirebase.fireLogged.uidUser;
     cDestinatario.mensagem = msg.mensagem;
     cDestinatario.nome = destinatario.nome;
     cDestinatario.caminhoFoto = destinatario.urlImagemPerfil;

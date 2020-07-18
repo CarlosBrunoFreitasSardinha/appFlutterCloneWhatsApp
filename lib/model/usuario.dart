@@ -1,6 +1,3 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:flutterappwhatsappcb/model/usuario.dart';
-
 class Usuario {
   String _uidUser;
   String _nome;
@@ -50,12 +47,6 @@ class Usuario {
       "urlImagemPerfil": this.urlImagemPerfil,
     };
     return map;
-  }
-
-  ofMap(Map<String, dynamic> theMap){
-    this.uidUser = theMap["uidUser"];
-    this.nome = theMap["nome"];
-    this.urlImagemPerfil = theMap["urlImagemPerfil"];
   }
 
   @override

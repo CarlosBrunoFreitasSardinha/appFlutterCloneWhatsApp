@@ -1,8 +1,8 @@
 import 'dart:async';
-import 'dart:convert';
+
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutterappwhatsappcb/model/Conversa.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutterappwhatsappcb/model/usuario.dart';
 import 'package:flutterappwhatsappcb/model/usuarioFireBase.dart';
 
@@ -47,18 +47,11 @@ class _abaConversasState extends State<abaConversas> {
 
   }
 
-
-  Future<Usuario> _recuperaDadosUid(String uid)  async{
-    Firestore bd = Firestore.instance;
-    Usuario destinatario = Usuario();
-    DocumentSnapshot snapshot =
-    await bd.collection("usuarios").document(uid).get();
-    var dados = snapshot.data;
-    destinatario.uidUser = dados["uidUser"];
-    destinatario.nome = dados["nome"];
-    destinatario.urlImagemPerfil =
-    dados["urlImagemPerfil"] != null ? dados["urlImagemPerfil"] : "";
-    return destinatario;
+  @override
+  void dispose() {
+    // TODO: implement dispose
+    super.dispose();
+    _controller.close();
   }
 
   @override
@@ -112,14 +105,16 @@ class _abaConversasState extends State<abaConversas> {
                     String mensagem   = item["mensagem"];
                     String nome       = item["nome"];
 
-                    Usuario destinatario = Usuario();
-                    destinatario.ofMap(item["idDestinatario"] );
+                    Usuario usuarioContato = Usuario();
+                    usuarioContato.uidUser = item["idDestinatario"];
+                    usuarioContato.nome = nome;
+                    usuarioContato.urlImagemPerfil = urlImagem;
 
                     return ListTile(
                       onTap: (){
                         Navigator.pushNamed(context,
                             RouteGenerator.ROTA_MSGS,
-                            arguments: destinatario);
+                            arguments: usuarioContato);
                       },
                       contentPadding: EdgeInsets.fromLTRB(16, 8, 16, 8),
                       leading: CircleAvatar(

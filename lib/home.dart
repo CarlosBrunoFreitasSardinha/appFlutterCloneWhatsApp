@@ -15,7 +15,7 @@ class _HomeState extends State<Home> with SingleTickerProviderStateMixin{
   TabController _tabController;
   String _emailUsuario="";
   List<String> _itensMenu=["Configurações", "test", "Sair"];
-  
+
   Future _verificarUsuarioLogado() async{
     FirebaseAuth auth = FirebaseAuth.instance;
     FirebaseUser usuarioLogado = await auth.currentUser();
@@ -58,7 +58,8 @@ class _HomeState extends State<Home> with SingleTickerProviderStateMixin{
     return Scaffold(
       appBar: AppBar(
         title: Text("WhatsApp"),
-        bottom: TabBar(
+          elevation: 0,
+          bottom: TabBar(
           indicatorWeight: 7,
             labelStyle: TextStyle(
               fontSize: 18,
